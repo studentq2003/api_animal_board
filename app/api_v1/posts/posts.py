@@ -5,7 +5,7 @@ router = APIRouter()
 from app.core import models, crud, schemas
 from app.core.database import engine, SessionLocal
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 
 def get_db():
@@ -19,7 +19,7 @@ def get_db():
 db = get_db()
 
 
-@router.get("/")
+@router.get("/", name="All posts")
 def get_all_posts(
     db: SessionLocal = Depends(get_db),
     page_num: int = 1,
@@ -29,15 +29,15 @@ def get_all_posts(
     return crud.get_posts(db, start, page_size)
 
 
-@router.get("/{post_id}/")
-def get_all_posts(
+@router.get("/{post_id}/", name="Post by id")
+def get_post(
     post_id: int,
     db: SessionLocal = Depends(get_db),
 ):
     return crud.get_post_by_id(db, post_id)
 
 
-@router.post("/", response_model=schemas.PostsBase)
+@router.post("/", response_model=schemas.PostsBase, name="Create post")
 def create_post(post: schemas.CreatePost, db: SessionLocal = Depends(get_db)):
 
     return crud.create_post(db, post)
